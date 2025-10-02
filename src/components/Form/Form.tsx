@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import { countries } from "../data/countries";
+import { countries } from "../../data/countries";
 import styles from '../Form/Form.module.css'
-import type { SearchType } from "../types";
+import type { SearchType } from "../../types";
 import Alert from "../Alert/Alert";
 
 type FormProps = {
@@ -64,7 +64,7 @@ export default function Form({fetchWeather} : FormProps) {
             >
                 <option value="">-- Seleccione un País ---</option>
                 {countries.map(country =>(
-                    <option value={country.name} key={country.code}>{country.name}</option>
+                    <option value={country.code} key={country.code}>{country.name}</option>
                 ))}
             </select>
             
