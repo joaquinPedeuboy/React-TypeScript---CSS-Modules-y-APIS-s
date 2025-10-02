@@ -1,6 +1,8 @@
 import axios from "axios"
 import type { SearchType } from "../types"
-import { z } from 'zod'
+import { object, string, number, parse } from "valibot"
+import type { InferOutput } from "valibot"
+// import { z } from 'zod'
 
 // TYPE GUARD O ASSERTION
 // function isWeatherResponse(weather : unknown): weather is Weather {
@@ -14,16 +16,32 @@ import { z } from 'zod'
 //     )
 
 // }
-const Weather = z.object({
-    name: z.string(),
-    main: z.object({
-        temp: z.number(),
-        temp_max: z.number(),
-        temp_min: z.number()
+
+//ZOD
+
+// const Weather = z.object({
+//     name: z.string(),
+//     main: z.object({
+//         temp: z.number(),
+//         temp_max: z.number(),
+//         temp_min: z.number()
+//     })
+// })
+
+// type Weather = z.infer<typeof Weather>
+
+// Valibot
+const WeatherSchema = object({
+    name: string(),
+    main: object({
+        temp: number(),
+        temp_max: number(),
+        temp_min: number()
     })
 })
 
-type Weather = z.infer<typeof Weather>
+type Weather = InferOutput<typeof WeatherSchema>
+
 
 export default function useWeather() {
 
@@ -49,16 +67,27 @@ export default function useWeather() {
             //     console.log('Respuesta mal formulada')
             // }
 
-            //zod
+            //ZOD
+
+            // const {data: weatherResult} = await axios(weatherUrl)
+            // const result = Weather.safeParse(weatherResult)
+            // if(result.success) {
+            //     console.log(result.data.name)
+            //     console.log(result.data.main.temp)
+            // } else {
+            //     console.log('Respuesta mal formada')
+            // }
+
+            // VALIBOT
+
             const {data: weatherResult} = await axios(weatherUrl)
-            const result = Weather.safeParse(weatherResult)
-            if(result.success) {
-                console.log(result.data.name)
-                console.log(result.data.main.temp)
+            const result = parse(WeatherSchema, weatherResult)
+            if(result) {
+                console.log(result.name)
+                console.log(result.main.temp)
             } else {
                 console.log('Respuesta mal formada')
             }
-
 
         } catch (error) {
             console.log(error)
